@@ -221,7 +221,7 @@ printf( "!!%d\n", debugccount3 );
 		int i;
 		static int did_init = 0;
 
-		if( !did_init && printed_ip )
+		if( !did_init )
 		{
 			//For sending raw packets.
 			//SetupRawsend();
@@ -325,8 +325,8 @@ void user_init(void)
 	pUdpServer->proto.udp->remote_port = 9999;
 	pUdpServer->proto.udp->remote_ip[0] = 192;
 	pUdpServer->proto.udp->remote_ip[1] = 168;
-	pUdpServer->proto.udp->remote_ip[2] = 1;
-	pUdpServer->proto.udp->remote_ip[3] = 113;
+	pUdpServer->proto.udp->remote_ip[2] = 4;
+	pUdpServer->proto.udp->remote_ip[3] = 3;
 	espconn_regist_recvcb(pUdpServer, udpserver_recv);
 	if( espconn_create( pUdpServer ) )
 		while(1)

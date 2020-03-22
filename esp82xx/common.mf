@@ -1,0 +1,50 @@
+###############################################################################
+# This is for commom variables shared between sub-Makefiles
+# The variables here are not necessary for the extensa compiler, but also
+#+for client software like the command-line utilities (e.g. execute_reflash).
+# Note: user.cfg can override these.
+
+###############################################################################
+# Toolchain Options
+###############################################################################
+
+PORT = /dev/ttyACM0
+ESP_ROOT = /home/vakaris/Desktop/sdk_latest/esp-open-sdk
+GCC_FOLDER = $(ESP_ROOT)/xtensa-lx106-elf
+ESPTOOL_PY = esptool.py
+SDK       ?= $(ESP_ROOT)/sdk
+
+XTLIB        = $(SDK)/lib
+XTGCCLIB     = $(GCC_FOLDER)/lib/gcc/xtensa-lx106-elf/$(ESP_GCC_VERS)/libgcc.a
+FOLDERPREFIX = $(GCC_FOLDER)/bin
+PREFIX       = $(FOLDERPREFIX)/xtensa-lx106-elf-
+CC           = $(PREFIX)gcc
+LD           = $(PREFIX)ld
+AR           = $(PREFIX)ar
+CP           = cp
+
+SLOWTICK_MS ?= 50
+
+###############################################################################
+# Derived Options
+###############################################################################
+
+OPTS += -DWEB_PORT=$(WEB_PORT) -DCOM_PORT=$(COM_PORT) -DBACKEND_PORT=$(BACKEND_PORT) $(EXTRAOPTS) -DSLOWTICK_MS=$(SLOWTICK_MS)
+PAGE_SCRIPTS?=$(wildcard web/page/*.js)
+
+# Version related stuff
+VERSION := $(shell git describe --abbrev=5 --dirty=-dev --always --tags)
+VERSSTR := "Version: $(VERSION) - Build $(shell date) with $(OPTS)"
+PROJECT_NAME := $(notdir $(shell git rev-parse --show-toplevel))
+PROJECT_URL := $(subst .com:,.com/,$(subst .git,,$(subst git@,https://,$(shell git config --get remote.origin.url))))
+
+# Newline and space hacks
+define \n
+
+
+endef
+empty:=
+\s:= $(empty) $(empty)
+
+# Helper functions
+uniq = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))

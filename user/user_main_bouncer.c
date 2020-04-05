@@ -72,6 +72,10 @@ void  __attribute__ ((noinline)) rx_func( struct RxPacket * r, void ** v )
 		return;
 	}
 
+	// Send back the packet to pitcher
+	packet_tx_time = 0;
+	wifi_send_pkt_freedom( mypacket, 30 + 16, true) ; 
+
 
 	//debugccount2++;
 	//printf( "%p = %p %p %p %p %p %p %p %p %p %p\n", v, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9] );
@@ -207,7 +211,7 @@ printf( "!!%d\n", debugccount3 );
 //	wifi_set_phy_mode(PHY_MODE_11G); //??? Maybe - I haven't been doing this...
 //	wifi_set_user_fixed_rate( 3, 0x0c );
 
-
+	
 	wifi_set_phy_mode(PHY_MODE_11N); //??? Maybe - I haven't been doing this...
 	wifi_set_user_fixed_rate( 3, 0x1f );
 
@@ -238,20 +242,7 @@ printf( "!!%d\n", debugccount3 );
 
 
 		//printf( "%d\n", debugccount );
-		//uart0_sendStr("k");
-		ets_strcpy( mypacket+30, "ESPEED" );
-		txpakid++;
-		mypacket[36] = txpakid>>24;
-		mypacket[37] = txpakid>>16;
-		mypacket[38] = txpakid>>8;
-		mypacket[39] = txpakid>>0;
-		mypacket[40] = 0;
-		mypacket[41] = 0;
-		mypacket[42] = 0;
-		mypacket[43] = 0;
-	
-		packet_tx_time = 0;
-		wifi_send_pkt_freedom( mypacket, 30 + 16, true) ;  
+		//uart0_sendStr("k"); 
 		//Looks like we can actually set the speed --> wifi_set_user_fixed_rate( 3, 12 );
 	}
 	else if( thistik >= waittik ) //Happens 3ms later.
@@ -269,8 +260,6 @@ void ICACHE_FLASH_ATTR charrx( uint8_t c ) {/*Called from UART.*/}
 
 void user_init(void)
 {
-	
-	wifi_set_hostname("ESP_BOUNCER");
 	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 
@@ -294,11 +283,14 @@ void user_init(void)
 	printf( "depc: %p\n", r->depc );
 
 
-
+	
+	wifi_station_set_hostname("ESP_BOUNCER");	
+	ets_strcpy( mypacket+30, "BOUNCE" );
 	CSSettingsLoad( 0 );
     CSPreInit();
 
 	CSInit();
+	wifi_station_set_hostname("ESP_BOUNCER");
 
 
 	//Set GPIO16 for INput

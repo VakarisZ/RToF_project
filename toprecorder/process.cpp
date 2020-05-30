@@ -550,11 +550,11 @@ void LoadEntries( const char * filename )
 			continue;
 		}
 
-		if( strcmp( code, "ESPEED" ) != 0 )
-		{
-			//fprintf( stderr, "Error: unmatching code on line %d\n", lineno );
-			continue;
-		}
+		//if( strcmp( code, "ESPEED" ) != 0 )
+		//{
+		//	//fprintf( stderr, "Error: unmatching code on line %d\n", lineno );
+		//	continue;
+		//}
 		DataEntry e;
 		e.IP = ip;
 		e.rssi = param1>>40;

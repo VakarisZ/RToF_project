@@ -3,7 +3,7 @@
 #include <esp82xxutil.h>
 #include <commonservices.h>
 extern uint32_t debugccount;
-extern uint32_t debugccount2;
+extern uint32_t sent_packet_cnt;
 
 int ICACHE_FLASH_ATTR CustomCommand(char * buffer, int retsize, char *pusrdata, unsigned short len)
 {
@@ -45,7 +45,7 @@ int ICACHE_FLASH_ATTR CustomCommand(char * buffer, int retsize, char *pusrdata, 
 			return buffend-buffer;
 		}
 		case 'd': case 'D': {
-			buffend += ets_sprintf( buffend, "CD\t%d\t%d", debugccount, debugccount2 );
+			buffend += ets_sprintf( buffend, "CD\t%d\t%d", debugccount, sent_packet_cnt );
 			return buffend-buffer;
 		}
 	}

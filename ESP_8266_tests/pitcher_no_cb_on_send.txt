@@ -1,0 +1,144 @@
+Custom Server
+
+IGMP Joining: 0104a8c0 fb0000e0
+CC's: 12045941 0Time difference: 4282921355
+Data sent to server
+CC's: 171623975 245704034Time difference: 74080059
+Data sent to server
+CC's: 331367288 331417579Time difference: 50291
+Data sent to server
+CC's: 491111430 624242702Time difference: 133131272
+Data sent to server
+CC's: 650854679 624242702Time difference: 4268355319
+Data sent to server
+CC's: 810598789 904300350Time difference: 93701561
+Data sent to server
+CC's: 970343462 970398559Time difference: 55097
+Data sent to server
+CC's: 1130087504 1130140559Time difference: 53055
+Data sent to server
+CC's: 1289831388 1130140559Time difference: 4135276467
+Data sent to server
+CC's: 1449574843 1583994074Time difference: 134419231
+Data sent to server
+CC's: 1609319484 1583994074Time difference: 4269641886
+Data sent to server
+CC's: 1769062725 1796726950Time difference: 27664225
+Data sent to server
+CC's: 1928807288 1982656478Time difference: 53849190
+Data sent to server
+CC's: 2088551430 2088606179Time difference: 54749
+Data sent to server
+CC's: 2248295462 2088606179Time difference: 4135278013
+Data sent to server
+CC's: 2408038821 2476120026Time difference: 68081205
+Data sent to server
+CC's: 2567783394 2683980126Time difference: 116196732
+Data sent to server
+CC's: 2727527484 2822575874Time difference: 95048390
+Data sent to server
+CC's: 2887271484 2940414046Time difference: 53142562
+Data sent to server
+CC's: 3047015484 3047069439Time difference: 53955
+Data sent to server
+CC's: 3206759394 3314235298Time difference: 107475904
+Data sent to server
+CC's: 3366503398 3432096994Time difference: 65593596
+Data sent to server
+CC's: 3526246757 3526295327Time difference: 48570
+Data sent to server
+CC's: 3685991430 3686043103Time difference: 51673
+Data sent to server
+CC's: 3845735352 3845786879Time difference: 51527
+Data sent to server
+CC's: 4005479504 3845786879Time difference: 4135274671
+Data sent to server
+CC's: 4165222843 4222549538Time difference: 57326695
+Data sent to server
+CC's: 30000188 4222549538Time difference: 4192549350
+Data sent to server
+CC's: 189743435 189786223Time difference: 42788
+Data sent to server
+CC's: 349488188 349542963Time difference: 54775
+Data sent to server
+CC's: 509232188 509285787Time difference: 53599
+Data sent to server
+CC's: 668976208 669032127Time difference: 55919
+Data sent to server
+CC's: 828719992 669032127Time difference: 4135279431
+Data sent to server
+CC's: 988463461 988507695Time difference: 44234
+Data sent to server
+CC's: 1148208134 1148262519Time difference: 54385
+Data sent to server
+CC's: 1307952056 1148262519Time difference: 4135277759
+Data sent to server
+CC's: 1467695415 1521757454Time difference: 54062039
+Data sent to server
+CC's: 1627440208 1627497875Time difference: 57667
+Data sent to server
+CC's: 1787184188 1787235583Time difference: 51395
+Data sent to server
+CC's: 1946928188 1787235583Time difference: 4135274691
+Data sent to server
+CC's: 2106671547 2106715639Time difference: 44092
+Data sent to server
+CC's: 2266416188 2266471107Time difference: 54919
+Data sent to server
+CC's: 2426160102 2527092906Time difference: 100932804
+Data sent to server
+CC's: 2585904134 2585954207Time difference: 50073
+Data sent to server
+CC's: 2745648056 2745701679Time difference: 53623
+Data sent to server
+CC's: 2905392208 2905442751Time difference: 50543
+Data sent to server
+CC's: 3065136188 3065189583Time difference: 53395
+Data sent to server
+CC's: 3224880188 3250734906Time difference: 25854718
+Data sent to server
+CC's: 3384623435 3384672047Time difference: 48612
+Data sent to server
+CC's: 3544368188 3544426563Time difference: 58375
+Data sent to server
+CC's: 3704112208 3704163155Time difference: 50947
+Data sent to server
+CC's: 3863856098 3863911591Time difference: 55493
+Data sent to server
+CC's: 4023600098 4023657147Time difference: 57049
+Data sent to server
+CC's: 4183344102 4237842310Time difference: 54498208
+Data sent to server
+CC's: 48120838 48171687Time difference: 50849
+Data sent to server
+CC's: 207864870 347738314Time difference: 139873444
+Data sent to server
+CC's: 367608912 367675759Time difference: 66847
+Data sent to server
+CC's: 527352892 527407719Time difference: 54827
+Data sent to server
+CC's: 687096892 527407719Time difference: 4135278123
+Data sent to server
+CC's: 846840251 527407719Time difference: 3975534764
+Data sent to server
+CC's: 1006584139 1006628395Time difference: 44256
+Data sent to server
+CC's: 1166328892 1006628395Time difference: 4135266799
+Data sent to server
+CC's: 1326072251 1326114875Time difference: 42624
+Data sent to server
+CC's: 1485816806 1326114875Time difference: 4135265365
+Data sent to server
+CC's: 1645560055 1725425238Time difference: 79865183
+Data sent to server
+CC's: 1805304838 1805357795Time difference: 52957
+Data sent to server
+CC's: 1965048870 1965105599Time difference: 56729
+Data sent to server
+CC's: 2124866640 2124922359Time difference: 55719
+Data sent to server
+CC's: 2284536780 2284590163Time difference: 53383
+Data sent to server
+CC's: 2444280892 2594118282Time difference: 149837390
+Data sent to server
+CC's: 2604024892 2604080971Time difference: 56079

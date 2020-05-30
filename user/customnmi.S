@@ -12,11 +12,12 @@
 
 
 .global packet_tx_time
+.global packet_rx_time
 
-//_addy_of_packet_tx_matchmask:
-//	.long packet_tx_matchmask
 _addy_of_packet_tx_time:
 	.long packet_tx_time
+_addy_of_packet_rx_time:
+	.long packet_rx_time
 _lendmark:
 	.long debugccount
 _gpiomark_out:
@@ -138,7 +139,7 @@ _skip_er:
 .global debugccount
 .global PreEmpt_NMI_Vector
 _lendmark2b:
-	.long debugccount2
+	.long sent_packet_cnt
 PreEmpt_NMI_Vector:
 	addi a1, a1, -8
 	s32i a2, a1, 4

@@ -1,0 +1,15 @@
+Connected to pydev debugger (build 193.6015.41)
+test1
+Average delay: 55229.95275722932
+Median delay: 34126.0
+Highest delay: 5759730
+Shortest_delay: 30644
+Total exchanges: 5948
+
+Removed anomalies
+test1
+Average delay: 33676.547764227646
+Median delay: 34058.0
+Highest delay: 40914
+Shortest_delay: 30644
+Total exchanges: 4920

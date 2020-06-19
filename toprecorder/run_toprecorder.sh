@@ -1,1 +1,1 @@
-./toprecorder 2>&1 | tee ./tests/test1
+./toprecorder 2>&1 | tee ./tests/20000/test6

@@ -1,0 +1,18 @@
+Connected to pydev debugger (build 193.6015.41)
+test2
+Average delay: 1289400.2181477516
+Median delay: 34095.0
+Highest delay: 4294118325
+Shortest_delay: 30580
+Total exchanges: 14944
+
+Removed anomalies
+test2
+Average delay: 32828.6862
+Median delay: 32694.0
+Highest delay: 35502
+Shortest_delay: 30580
+Total exchanges: 10000
+
+
+Process finished with exit code 0

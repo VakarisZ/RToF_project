@@ -8,9 +8,9 @@ from exchange import Exchange
 
 class Measurement:
 
-    def __init__(self, exchanges: List[Exchange], test_name):
+    def __init__(self, exchanges: List[int], test_name):
         self.test_name = test_name
-        self.exchanges = [int(exchange.delay) for exchange in exchanges]
+        self.exchanges = exchanges
         self.average_delay = None
         self.median_delay = None
         self.longest_delay = None
@@ -28,12 +28,19 @@ class Measurement:
         return sum(exchanges)/len(exchanges)
 
     @staticmethod
-    def filter_anomalies(measurement: Measurement, max_deviation_percent: int):
+    def filter_anomalies_median(measurement: Measurement, max_deviation_percent: int):
         delays = []
         for delay in measurement.exchanges:
             if abs(measurement.median_delay - delay) / measurement.median_delay * 100 < max_deviation_percent:
                 delays.append(delay)
         measurement.exchanges = delays
+        measurement.calculate_statistic_values()
+        return measurement
+
+    @staticmethod
+    def filter_anomalies_from_shortest_by_limit(measurement: Measurement, limit: int):
+        measurement.exchanges.sort()
+        measurement.exchanges = measurement.exchanges[:limit]
         measurement.calculate_statistic_values()
         return measurement
 

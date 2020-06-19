@@ -206,7 +206,7 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
         packet_received = 0;
         CSTick(1);
     }
-    if (thistik == 3)
+    if (thistik == 15)
     {
         int i;
         static int did_init = 0;

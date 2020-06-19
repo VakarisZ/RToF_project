@@ -8,8 +8,11 @@ Total exchanges: 14900
 
 Removed anomalies
 test1
-Average delay: 33223.80023076923
-Median delay: 32726.0
-Highest delay: 35587
+Average delay: 32601.8308
+Median delay: 32662.0
+Highest delay: 34170
 Shortest_delay: 31147
-Total exchanges: 13000
+Total exchanges: 10000
+
+
+Process finished with exit code 0

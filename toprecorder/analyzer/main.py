@@ -1,15 +1,14 @@
 import os
 from typing import List
 
-from exchange import Exchange
 from measurement import Measurement
 
-TEST_DIR = "../tests/"
-TEST_FILENAME = "test5"
-SENT_PACKET_ID = "ESPTXX"
-RECEIVED_PACKET_ID = "BOUNCE"
+TEST_DIR = "../tests/6000/"
+TEST_FILENAME = "test2"
+PACKET_ID = "ESPPIT"
 MAX_TIME = 2**32
-MAX_ANOMALY_DEVIATION_PERCENT = 40
+MAX_ANOMALY_DEVIATION_PERCENT = 20
+PACKET_CNT_AFTER_FILTER = 5000
 PACKET_VALUE_CNT = 7
 
 
@@ -18,23 +17,22 @@ def main():
     test_file = open(test_file_path, 'r', errors='ignore')
     file_lines = test_file.readlines()
     packets = [packet_data.split(' ') for packet_data in file_lines[1:-1]]
-    packet_exchanges = get_exchanges(packets)
+    packet_exchanges = get_exchange_times(packets)
     measurement = Measurement(packet_exchanges, TEST_FILENAME)
     print(measurement)
 
-    measurement = Measurement.filter_anomalies(measurement, MAX_ANOMALY_DEVIATION_PERCENT)
+    #measurement = Measurement.filter_anomalies_median(measurement, MAX_ANOMALY_DEVIATION_PERCENT)
+    measurement = Measurement.filter_anomalies_from_shortest_by_limit(measurement, PACKET_CNT_AFTER_FILTER)
     print("Removed anomalies")
     print(measurement)
 
 
-def get_exchanges(packet_list: List[List[str]]):
+def get_exchange_times(packet_list: List[List[str]]) -> List[int]:
     exchanges = []
-    for i in range(1, len(packet_list)):
-        if len(packet_list[i]) == PACKET_VALUE_CNT and len(packet_list[i-1]) == PACKET_VALUE_CNT and\
-                packet_list[i][-3] == RECEIVED_PACKET_ID and packet_list[i-1][-3] == SENT_PACKET_ID:
-            sent_time = int(packet_list[i-1][-1])
-            receive_time = int(packet_list[i][-1])
-            exchanges.append(Exchange(sent_time, receive_time, MAX_TIME))
+    for i in range(0, len(packet_list)):
+        if len(packet_list[i]) == PACKET_VALUE_CNT \
+               and packet_list[i][-3] == PACKET_ID:
+            exchanges.append(int(packet_list[i][PACKET_VALUE_CNT-1]))
     return exchanges
 
 

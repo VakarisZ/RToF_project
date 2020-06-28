@@ -73,72 +73,18 @@ void udpserver_recv(void *arg, char *pusrdata, unsigned short len) {
 
 #define MAX_BUFFERS 10
 #define BUFFERSIZE 40
-uint8_t buffers[MAX_BUFFERS][BUFFERSIZE];
-uint8_t bufferinuse[MAX_BUFFERS];
 
 void __attribute__((noinline)) rx_func(struct RxPacket *r, void **v)
 {
     packet_rx_time = asm_ccount();
     if (r->data[24] != 0x82 || r->data[25] != 0x66 || r->data[26] != 0x82 || r->data[27] != 0x66)
     {
+        packet_rx_time = 0;
         return;
     }
-    int b = 0;
-    for (b = 0; b < MAX_BUFFERS; b++)
-    {
-        if (bufferinuse[b] == 0)
-            break;
-    }
-    if (b == MAX_BUFFERS)
-        return;
-
-    uint8_t *buffout = buffers[b];
-    ets_memcpy(buffout, r, 6);                         //Header
-    ets_memcpy(buffout + 6, ((uint8_t *)r) + 22, 6);   //MAC From
-    ets_memcpy(buffout + 12, mypacket + 10, 6);        //My MAC
-    ets_memcpy(buffout + 18, ((uint8_t *)r) + 42, 20); //ESPEED?
-    //Two bytes at end of buffer are reserved.
 
     received_packet_cnt = received_packet_cnt + 1;
-    bufferinuse[b] = 1;
     packet_received = 1;
-
-    //	buffout[36] = debugccount>>24;
-    //	buffout[37] = debugccount>>16;
-    //	buffout[38] = debugccount>>8;
-    //	buffout[39] = debugccount>>0; No longer needed, put in place by interrupt.
-
-    //	espconn_sent(pUdpServer, buffout, 40 ); //+8 = include header
-
-    //Tricky: Can't call espconn_sent from inside here.
-}
-
-
-static void ClearOutBuffers() {
-    int b;
-    for (b = 0; b < MAX_BUFFERS; b++) {
-        bufferinuse[b] = 0;
-    }
-}
-
-static void SendBufferToServer(uint32_t rtof, uint32_t packet_cnt){
-
-    uint8_t buffout[BUFFERSIZE];
-    ets_memcpy(buffout, "\x00\x00\x00\x00\x00\x00", 6); //Header
-    ets_memcpy(buffout + 6, mypacket + 10, 6);          //MAC From (us)
-    ets_memcpy(buffout + 12, mypacket + 10, 6);         //My MAC (us)
-    ets_memcpy(buffout + 18, "ESPPIT", 6);              //ESPTXX
-
-    buffout[24] = packet_cnt >> 24;
-    buffout[25] = packet_cnt >> 16;
-    buffout[26] = packet_cnt >> 8;
-    buffout[27] = packet_cnt >> 0;
-
-    buffout[28] = rtof >> 0;
-    buffout[29] = rtof >> 8;
-    buffout[30] = rtof >> 16;
-    buffout[31] = rtof >> 24;
-    espconn_sent(pUdpServer, buffout, BUFFERSIZE);
 }
 
 int txpakid;
@@ -160,7 +106,6 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
     static int thistik;
     static int waittik;
     
-    //waittik = rand() % 10 + 40;
     waittik = 100;
     thistik++;
 
@@ -188,45 +133,27 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
 
     //	wifi_set_user_limit_rate_mask( 3 );
     //	wifi_set_user_rate_limit( FIXED_RATE_MASK_ALL, 0, 1, 1 );
-    if (packet_sent && packet_received) {
-        printf("----------------------------------\n");
-        printf("RX cc: %u TX cc: %u Diff: %u\n", packet_rx_time, packet_tx_time, (packet_rx_time - packet_tx_time));
-        printf("Packet NR. %u\n", received_packet_cnt);
-        printf("----------------------------------\n");
-        SendBufferToServer((packet_rx_time - packet_tx_time), received_packet_cnt);
-        ClearOutBuffers();
+    if (thistik == waittik) {
+        printf("%d %d %u %u %u\n", (packet_sent && packet_received), 
+                                    received_packet_cnt, 
+                                    packet_rx_time, 
+                                    packet_tx_time, 
+                                    (packet_rx_time - packet_tx_time));
         packet_sent = 0;
         packet_received = 0;
+        packet_tx_time = 0;
+        packet_rx_time =0;
 
         thistik = 0;
     }
-    if (thistik >= waittik) {
+    if (thistik > waittik) {
         thistik = 0;
         packet_sent = 0;
         packet_received = 0;
-        CSTick(1);
     }
-    if (thistik == 15)
+    if (thistik == 10)
     {
         int i;
-        static int did_init = 0;
-
-        if (!did_init)
-        {
-            //For sending raw packets.
-            //SetupRawsend();
-            wifi_set_raw_recv_cb(rx_func);
-
-            // wifi_register_send_pkt_freedom_cb(sent_freedom_cb);
-            wifi_register_send_pkt_freedom_cb(set_tx_status);
-            did_init = 1;
-
-            //Setup our send packet with our MAC address.
-            wifi_get_macaddr(STATION_IF, mypacket + 10);
-            debugccount = 0;
-
-            //printf( "!!!\n" );
-        }
 
         //printf( "%d\n", debugccount );
         //uart0_sendStr("k");
@@ -302,6 +229,20 @@ void user_init(void)
     AddMDNSService("_http._tcp", "An ESP8266 Webserver", WEB_PORT);
     AddMDNSService("_esp82xx._udp", "ESP8266 Backend", BACKEND_PORT);
 
+    //For sending raw packets.
+    //SetupRawsend();
+    wifi_set_raw_recv_cb(rx_func);
+
+    // wifi_register_send_pkt_freedom_cb(sent_freedom_cb);
+    wifi_register_send_pkt_freedom_cb(set_tx_status);
+
+    //Setup our send packet with our MAC address.
+    wifi_get_macaddr(STATION_IF, mypacket + 10);
+    debugccount = 0;
+
+    //printf( "!!!\n" );
+
+    // maybe not required
     pUdpServer = (struct espconn *)os_zalloc(sizeof(struct espconn));
     ets_memset(pUdpServer, 0, sizeof(struct espconn));
     espconn_create(pUdpServer);

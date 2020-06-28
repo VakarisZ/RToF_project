@@ -1,0 +1,17 @@
+test3
+Average delay: 906956.9357577378
+Median delay: 34051
+Highest delay: 4294952586
+Shortest_delay: 31151
+Total exchanges: 14959
+
+Removed anomalies
+test3
+Average delay: 32063.3868
+Median delay: 32606.0
+Highest delay: 34054
+Shortest_delay: 31151
+Total exchanges: 7500
+
+
+Process finished with exit code 0

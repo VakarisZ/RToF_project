@@ -1,20 +1,28 @@
+from __future__ import annotations
+
 from typing import List
 
 
 class Exchange:
 
-    def __init__(self, sent_time: int, received_time: int, max_time: int):
-        self.sent_time = sent_time
-        self.received_time = received_time
-        self.delay = Exchange.calculate_delay(sent_time, received_time, max_time)
+    def __init__(self, success: bool, id_: int, cc_on_send: int, cc_on_receive: int, delay: int):
+        self.success = bool(success)
+        self.id_ = id_
+        self.cc_on_send = cc_on_send
+        self.cc_on_receive = cc_on_receive
+        self.delay = delay
+
+    def __int__(self):
+        return -1 if not self.success else int(self.delay)
 
     @staticmethod
-    def calculate_delay(sent_time, received_time, max_time):
-        if received_time < sent_time:
-            return max_time - sent_time + received_time
-        else:
-            return received_time - sent_time
+    def list_to_exchange(exchanges_input: List) -> List[Exchange]:
+        return [Exchange._input_list_to_exchange(input_list) for input_list in exchanges_input if input_list[0]]
 
     @staticmethod
-    def packet_pair_to_exchange(sent_packet: List[str], received_packet: List[str]):
-        return Exchange(sent_time=int(sent_packet[-1]), received_time=int(received_packet[-1]))
+    def _input_list_to_exchange(input_list: List):
+        return Exchange(success=bool(int(input_list[0])),
+                        id_=input_list[1],
+                        cc_on_send=input_list[3],
+                        cc_on_receive=input_list[2],
+                        delay=input_list[4])

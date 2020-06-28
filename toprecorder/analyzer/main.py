@@ -3,28 +3,34 @@ from typing import List
 
 from measurement import Measurement
 
-TEST_DIR = "../tests/6000/"
-TEST_FILENAME = "test2"
+TEST_DIR = "../tests/20000/"
+TEST_FILENAME = "test1.txt"
 PACKET_ID = "ESPPIT"
 MAX_TIME = 2**32
 MAX_ANOMALY_DEVIATION_PERCENT = 20
-PACKET_CNT_AFTER_FILTER = 5000
+PACKET_CNT_AFTER_FILTER = 3000
 PACKET_VALUE_CNT = 7
 
 
 def main():
     test_file_path = os.path.join(TEST_DIR, TEST_FILENAME)
-    test_file = open(test_file_path, 'r', errors='ignore')
-    file_lines = test_file.readlines()
-    packets = [packet_data.split(' ') for packet_data in file_lines[1:-1]]
+    packets = read_exchange_data(test_file_path)
     packet_exchanges = get_exchange_times(packets)
     measurement = Measurement(packet_exchanges, TEST_FILENAME)
     print(measurement)
 
     #measurement = Measurement.filter_anomalies_median(measurement, MAX_ANOMALY_DEVIATION_PERCENT)
-    measurement = Measurement.filter_anomalies_from_shortest_by_limit(measurement, PACKET_CNT_AFTER_FILTER)
+    #measurement = Measurement.filter_anomalies_from_shortest_by_limit(measurement, PACKET_CNT_AFTER_FILTER)
+    measurement = Measurement.filter_anomalies_advanced(measurement, 10, 50)
     print("Removed anomalies")
     print(measurement)
+
+
+def read_exchange_data(path: str) -> List[List[str]]:
+    test_file = open(path, 'r', errors='ignore')
+    file_lines = test_file.readlines()
+    packets = [packet_data.split(' ') for packet_data in file_lines[1:-1]]
+    return packets
 
 
 def get_exchange_times(packet_list: List[List[str]]) -> List[int]:

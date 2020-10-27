@@ -16,8 +16,8 @@ class Exchange:
         return -1 if not self.success else int(self.delay)
 
     @staticmethod
-    def list_to_exchange(exchanges_input: List) -> List[Exchange]:
-        return [Exchange._input_list_to_exchange(input_list) for input_list in exchanges_input if input_list[0]]
+    def list_to_exchange(exchanges_input: List) -> Exchange:
+        return Exchange._input_list_to_exchange(exchanges_input)
 
     @staticmethod
     def _input_list_to_exchange(input_list: List):
@@ -25,4 +25,4 @@ class Exchange:
                         id_=input_list[1],
                         cc_on_send=input_list[3],
                         cc_on_receive=input_list[2],
-                        delay=input_list[4])
+                        delay=int(input_list[4]))

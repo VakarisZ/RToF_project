@@ -66,11 +66,6 @@ static uint8_t packet_sent;
 
 uint8_t tx_packet_status;
 
-void udpserver_recv(void *arg, char *pusrdata, unsigned short len) {
-    struct espconn *pespconn = (struct espconn *)arg;
-    // Not used.
-}
-
 #define MAX_BUFFERS 10
 #define BUFFERSIZE 40
 
@@ -106,7 +101,7 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
     static int thistik;
     static int waittik;
     
-    waittik = 100;
+    waittik = 30;
     thistik++;
 
     CSTick(0);
@@ -142,34 +137,19 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
         packet_sent = 0;
         packet_received = 0;
         packet_tx_time = 0;
-        packet_rx_time =0;
-
+        packet_rx_time = 0;
         thistik = 0;
     }
-    if (thistik > waittik) {
-        thistik = 0;
-        packet_sent = 0;
-        packet_received = 0;
-    }
-    if (thistik == 10)
+    if (thistik == 5)
     {
         int i;
 
         //printf( "%d\n", debugccount );
         //uart0_sendStr("k");
-        ets_strcpy(mypacket + 30, "ESPEED");
-        txpakid++;
-        mypacket[36] = txpakid>>24;
-        mypacket[37] = txpakid>>16;
-        mypacket[38] = txpakid>>8;
-        mypacket[39] = txpakid>>0;
-        mypacket[40] = 0;
-        mypacket[41] = 0;
-        mypacket[42] = 0;
-        mypacket[43] = 0;
-
         packet_tx_time = 0;
+        uint32_t temp_tx_time = asm_ccount();
         wifi_send_pkt_freedom(mypacket, 30 + 16, true);
+        packet_tx_time = temp_tx_time;
         //Looks like we can actually set the speed --> wifi_set_user_fixed_rate( 3, 12 );
     }
 }
@@ -198,6 +178,7 @@ void user_init(void)
     packet_tx_time = 0;
     tx_packet_status = 0;
     received_packet_cnt = 0;
+    ets_strcpy(mypacket + 30, "ESPEED");
 
     struct rst_info *r = system_get_rst_info();
     printf("Reason: %p\n", r->reason);
@@ -270,6 +251,11 @@ void user_init(void)
     os_timer_disarm(&some_timer);
     os_timer_setfn(&some_timer, (os_timer_func_t *)myTimer, NULL);
     os_timer_arm(&some_timer, 1, 1); //The underlying API expects it's slow ticks to average out to 50ms.
+    
+    // HW timer
+    // hw_timer_init(FRC1_SOURCE, 1);
+    // hw_timer_set_func(myTimer);
+
 
     //system_os_post(procTaskPrio, 0, 0 );
 

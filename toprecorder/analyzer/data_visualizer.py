@@ -1,13 +1,13 @@
 import os
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 
-from main import get_exchange_times, read_exchange_data
+from main import read_exchange_data
 from exchange import Exchange
 from measurement import Measurement
 
 TEST_DIR = "../tests/20000/"
-TEST_FILENAME = "test1.txt"
+TEST_FILENAME = "test-5m.txt"
 FILTER_MIN = 35600
 FILTER_MAX = 35640
 MIN_VALUE_FREQUENCY = 60

@@ -41,6 +41,13 @@ class Measurement:
     def filter_by_range(self, low: int, high: int):
         self.exchanges = [exchange for exchange in self.exchanges if low < int(exchange) < high]
 
+    def show_send_period(self, n=300):
+        for i in range(len(self.exchanges)):
+            if i == n:
+                break
+            print(int(self.exchanges[i+1].cc_on_send)-int(self.exchanges[i].cc_on_send))
+
+
     @staticmethod
     def filter_anomalies_median(measurement: Measurement, max_deviation_percent: int):
         delays = []

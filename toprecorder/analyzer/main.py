@@ -4,13 +4,13 @@ from typing import List
 from exchange import Exchange
 from measurement import Measurement
 
-TEST_DIR = "../tests/2020_10/"
-TEST_FILENAME = "tx_before_send.txt"
+TEST_DIR = "../tests/2020_11/"
+TEST_FILENAME = "local.txt"
 PACKET_ID = "ESPPIT"
 MAX_TIME = 2**32
 MAX_ANOMALY_DEVIATION_PERCENT = 20
 PACKET_CNT_AFTER_FILTER = 3000
-PACKET_VALUE_CNT = 5
+PACKET_VALUE_CNT = 7
 
 
 def main():
@@ -19,7 +19,9 @@ def main():
     packet_exchanges = get_exchange_times(packets)
     measurement = Measurement(packet_exchanges, TEST_FILENAME)
     #measurement.filter_unreceived()
-    measurement.show_send_period()
+    measurement.show_send_periods()
+    measurement.show_success_chance()
+    measurement.show_anomalies_in_tx()
     return
     #print(measurement)
 

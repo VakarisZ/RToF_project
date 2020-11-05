@@ -7,6 +7,7 @@
 #include "espconn.h"
 #include "esp_rawsend.h"
 #include "esp82xxutil.h"
+#include "hw_timer.c"
 
 #define procTaskPrio 0
 #define procTaskQueueLen 1
@@ -61,6 +62,9 @@ volatile uint32_t packet_tx_matchmask = 0x10000;
 volatile uint32_t packet_rx_time;
 volatile uint32_t packet_rx_matchmask = 0x10000;
 
+volatile uint32_t c_time_before;
+volatile uint32_t c_time_after;
+
 static uint8_t packet_received;
 static uint8_t packet_sent;
 
@@ -97,14 +101,15 @@ extern uint8_t printed_ip;
 extern uint8_t *wDevCtrl;
 
 void PreEmpt_NMI_Vector();
-static void ICACHE_FLASH_ATTR myTimer(void *arg) {
+
+static void hw_timer_cb(void) {
     static int thistik;
     static int waittik;
     
-    waittik = 30;
+    waittik = 70;
     thistik++;
 
-    CSTick(0);
+    // CSTick(0);
     // printf("!!%d\n", received_packet_cnt);
 
     //	wifi_set_user_fixed_rate( 3, 0x0b );  //0xb = 6Mbit G
@@ -123,33 +128,35 @@ static void ICACHE_FLASH_ATTR myTimer(void *arg) {
     //	wifi_set_phy_mode(PHY_MODE_11G); //??? Maybe - I haven't been doing this...
     //	wifi_set_user_fixed_rate( 3, 0x0c );
 
-    wifi_set_phy_mode(PHY_MODE_11N); //??? Maybe - I haven't been doing this...
-    wifi_set_user_fixed_rate(3, 0x1f);
-
     //	wifi_set_user_limit_rate_mask( 3 );
     //	wifi_set_user_rate_limit( FIXED_RATE_MASK_ALL, 0, 1, 1 );
     if (thistik == waittik) {
-        printf("%d %d %u %u %u\n", (packet_sent && packet_received), 
+        printf("%d %d %u %u %u %u %u\n", (packet_sent && packet_received), 
                                     received_packet_cnt, 
                                     packet_rx_time, 
                                     packet_tx_time, 
-                                    (packet_rx_time - packet_tx_time));
+                                    (packet_rx_time - packet_tx_time),
+                                    c_time_before,
+                                    c_time_after);
         packet_sent = 0;
         packet_received = 0;
         packet_tx_time = 0;
         packet_rx_time = 0;
         thistik = 0;
     }
-    if (thistik == 5)
+    if (thistik == 10)
     {
         int i;
 
         //printf( "%d\n", debugccount );
         //uart0_sendStr("k");
         packet_tx_time = 0;
-        uint32_t temp_tx_time = asm_ccount();
+        c_time_before = 0;
+        c_time_after = 0;
+
+        c_time_before = asm_ccount();
         wifi_send_pkt_freedom(mypacket, 30 + 16, true);
-        packet_tx_time = temp_tx_time;
+        c_time_after = asm_ccount();
         //Looks like we can actually set the speed --> wifi_set_user_fixed_rate( 3, 12 );
     }
 }
@@ -223,23 +230,6 @@ void user_init(void)
 
     //printf( "!!!\n" );
 
-    // maybe not required
-    pUdpServer = (struct espconn *)os_zalloc(sizeof(struct espconn));
-    ets_memset(pUdpServer, 0, sizeof(struct espconn));
-    espconn_create(pUdpServer);
-    pUdpServer->type = ESPCONN_UDP;
-    pUdpServer->proto.udp = (esp_udp *)os_zalloc(sizeof(esp_udp));
-    pUdpServer->proto.udp->local_port = 9999;
-    pUdpServer->proto.udp->remote_port = 9999;
-    pUdpServer->proto.udp->remote_ip[0] = 192;
-    pUdpServer->proto.udp->remote_ip[1] = 168;
-    pUdpServer->proto.udp->remote_ip[2] = 4;
-    pUdpServer->proto.udp->remote_ip[3] = 3;
-    espconn_regist_recvcb(pUdpServer, udpserver_recv);
-    if (espconn_create(pUdpServer))
-        while (1)
-            uart0_sendStr("\r\nFAULT\r\n");
-
     //XXX TODO figure out how to safely re-allow this.
 
     //Add a process
@@ -248,14 +238,18 @@ void user_init(void)
     uart0_sendStr("\r\nCustom Server\r\n");
 
     //Timer example
-    os_timer_disarm(&some_timer);
-    os_timer_setfn(&some_timer, (os_timer_func_t *)myTimer, NULL);
-    os_timer_arm(&some_timer, 1, 1); //The underlying API expects it's slow ticks to average out to 50ms.
+    // os_timer_disarm(&some_timer);
+    // os_timer_setfn(&some_timer, (os_timer_func_t *)myTimer, NULL);
+    // os_timer_arm(&some_timer, 1, 1); //The underlying API expects it's slow ticks to average out to 50ms.
     
-    // HW timer
-    // hw_timer_init(FRC1_SOURCE, 1);
-    // hw_timer_set_func(myTimer);
 
+    wifi_set_phy_mode(PHY_MODE_11N); //??? Maybe - I haven't been doing this...
+    wifi_set_user_fixed_rate(3, 0x1f);
+
+    // HW timer
+    hw_timer_init(NMI_SOURCE, 1);
+    hw_timer_set_func(hw_timer_cb);
+    hw_timer_arm(800);
 
     //system_os_post(procTaskPrio, 0, 0 );
 

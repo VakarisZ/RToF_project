@@ -41,12 +41,44 @@ class Measurement:
     def filter_by_range(self, low: int, high: int):
         self.exchanges = [exchange for exchange in self.exchanges if low < int(exchange) < high]
 
-    def show_send_period(self, n=300):
+    def filter_period(self, period):
+        return bool(8959900 < period < 8960100)
+
+    def show_send_periods(self, n=300):
+        cc_periods = []
+        before_periods = []
+        after_periods = []
+
+        for i in range(len(self.exchanges) - 1):
+            cc_period = int(self.exchanges[i+1].cc_on_send) - int(self.exchanges[i].cc_on_send)
+            before_period = int(self.exchanges[i + 1].tx_before) - int(self.exchanges[i].tx_before)
+            after_period = int(self.exchanges[i + 1].tx_after) - int(self.exchanges[i].tx_after)
+            if self.filter_period(cc_period):
+                cc_periods.append(cc_period)
+            if self.filter_period(before_period):
+                before_periods.append(before_period)
+            if self.filter_period(after_period):
+                after_periods.append(after_period)
+
+        plt.plot(range(len(cc_periods)), cc_periods, 'r--',range(len(after_periods)), after_periods, 'g--', range(len(before_periods)), before_periods, 'b--')
+        plt.show()
+
         for i in range(len(self.exchanges)):
             if i == n:
                 break
-            print(int(self.exchanges[i+1].cc_on_send)-int(self.exchanges[i].cc_on_send))
+            cc_period = int(self.exchanges[i+1].cc_on_send)-int(self.exchanges[i].cc_on_send)
+            before_period = int(self.exchanges[i+1].tx_before)-int(self.exchanges[i].tx_before)
+            after_period = int(self.exchanges[i+1].tx_after)-int(self.exchanges[i].tx_after)
+            print(f"Periods: {cc_period} {before_period} {after_period}")
 
+    def show_success_chance(self):
+        successful = [x.success for x in self.exchanges if x.success]
+        print(f"Success chance: {(len(successful) / len(self.exchanges)) * 100}")
+
+    def show_anomalies_in_tx(self):
+        anomalies = [x for x in self.exchanges if x.success and (x.cc_on_send > x.tx_after or x.cc_on_send < x.tx_before)]
+        for anomaly in anomalies:
+            print(f"Anomaly {anomaly.tx_before} {anomaly.cc_on_send} {anomaly.tx_after}")
 
     @staticmethod
     def filter_anomalies_median(measurement: Measurement, max_deviation_percent: int):
